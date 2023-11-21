@@ -10,4 +10,4 @@ atau bisa di `clone` menggunakan git:
 ```
 git clone https://github.com/ridhozhr10/jcwdol12-module2.git
 ```
-- semua file sudah otomatis masuk ke dalam folder `jcwdol12-module2.git`
+- semua file sudah otomatis masuk ke dalam folder baru `jcwdol12-module2`
