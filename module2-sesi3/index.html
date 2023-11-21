@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script>
+    function updateText() {
+      const element = document.getElementById("myElement");
+      element.textContent = "Updated Text";
+    }
+
+    function addItem() {
+      const newElement = document.createElement("li");
+      newElement.textContent = "new item";
+
+      const element = document.getElementById("myList");
+      element.appendChild(newElement);
+    }
+
+    function deleteText() {
+      const element = document.querySelector("#myElement");
+      const parentElement = element.parentNode;
+      parentElement.removeChild(element);
+    }
+  </script>
+</head>
+
+<body>
+  <div>
+    <div id="wrapper">
+      <h1 id="myElement">Original Text</h1>
+      <button onclick="updateText()">update text</button>
+      <button onclick="deleteText()">delete text</button>
+    </div>
+  </div>
+  <hr />
+  <ul id="myList"></ul>
+  <button onclick="addItem()">add item</button>
+</body>
+
+</html>
