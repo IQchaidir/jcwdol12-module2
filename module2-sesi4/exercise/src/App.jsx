@@ -3,6 +3,7 @@ import {
   Button,
   Checkbox,
   Container,
+  Divider,
   FormControl,
   FormLabel,
   HStack,
@@ -21,14 +22,14 @@ function App() {
           Chores ToDo List
         </Heading>
         <Container pb={3} maxW="2xl">
-          <HStack pt={3}>
+          <HStack mt={3}>
             <Checkbox colorScheme="green" borderColor="green" />
             <Text width="full">item 1</Text>
             <Button variant="outline" colorScheme="red" p={1}>
               <DeleteIcon />
             </Button>
           </HStack>
-          <HStack pt={3}>
+          <HStack mt={3}>
             <Checkbox colorScheme="green" borderColor="green" />
             <Text width="full">item 1</Text>
             <Button variant="outline" colorScheme="red" p={1}>
@@ -36,7 +37,7 @@ function App() {
             </Button>
           </HStack>
         </Container>
-        <Box borderColor="gray.600" borderStyle="solid" borderTopWidth={1} />
+        <Divider />
         <Container maxW="2xl">
           <Heading
             as="h2"
