@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   HStack,
   Heading,
@@ -10,12 +11,13 @@ import {
   Text,
   UnorderedList,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import axiosInstance from "../axios";
+import * as Yup from "yup";
+import { Form, Formik } from "formik";
 
 export default function HeroesDisplay() {
   const [heroes, setHeroes] = useState([]);
-  const [formHero, setFormHero] = useState({ name: "", color: "" });
   const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
@@ -24,34 +26,28 @@ export default function HeroesDisplay() {
 
   const fetchHeroes = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/superheroes");
+      const res = await axiosInstance.get("/superheroes");
       setHeroes(res.data);
     } catch (error) {
       alert(error.message);
     }
   };
 
-  const setEditSelected = (id) => {
+  const setEditSelected = (id, formik) => {
     setSelectedId(id);
     const [hero] = heroes.filter((hero) => hero.id === id);
-    setFormHero({ name: hero.name, color: hero.color });
+    formik.setFieldValue("name", hero.name);
+    formik.setFieldValue("color", hero.color);
   };
 
-  const handleSubmitHero = async (event) => {
-    event.preventDefault();
+  const handleSubmitHero = async (value, form) => {
     if (selectedId === null) {
-      const res = await axios.post(
-        "http://localhost:3000/superheroes",
-        formHero
-      );
+      const res = await axiosInstance.post("/superheroes", value);
       setHeroes((prev) => {
         return [...prev, res.data];
       });
     } else {
-      const res = await axios.put(
-        `http://localhost:3000/superheroes/${selectedId}`,
-        formHero
-      );
+      const res = await axiosInstance.put(`/superheroes/${selectedId}`, value);
       setHeroes((prev) => {
         const indexEdited = prev.findIndex((hero) => hero.id === selectedId);
         const copyPrev = [...prev];
@@ -59,6 +55,8 @@ export default function HeroesDisplay() {
         return copyPrev;
       });
     }
+    form.resetForm();
+    setSelectedId(null);
   };
 
   const deleteHero = async (id) => {
@@ -66,61 +64,90 @@ export default function HeroesDisplay() {
       return;
     }
 
-    await axios.delete(`http://localhost:3000/superheroes/${id}`);
+    await axiosInstance.delete(`/superheroes/${id}`);
     setHeroes((prev) => prev.filter((hero) => hero.id !== id));
   };
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormHero((prev) => {
-      return { ...prev, [name]: value };
-    });
-  };
+  const validationSchema = Yup.object().shape({
+    name: Yup.string()
+      .required("Hero name cannot be empty!")
+      .min(5, "Hero name must be longer than 5 characters"),
+    color: Yup.string().required("Hero color cannot be empty"),
+  });
 
   return (
-    <Box mt={10}>
-      <Heading>Heroes:</Heading>
-      <UnorderedList>
-        {heroes.map((hero) => (
-          <ListItem key={hero.id}>
-            <HStack>
-              <Text w="full">
-                {hero.name} ({hero.color})
-              </Text>
-              <Button onClick={() => setEditSelected(hero.id)}>Edit</Button>
-              <Button onClick={() => deleteHero(hero.id)} colorScheme="red">
-                Delete
+    <Formik
+      initialValues={{ name: "", color: "" }}
+      onSubmit={handleSubmitHero}
+      validationSchema={validationSchema}
+    >
+      {(formikProps) => (
+        <Box mt={10}>
+          <Heading>Heroes:</Heading>
+          <UnorderedList>
+            {heroes.map((hero) => (
+              <ListItem key={hero.id}>
+                <HStack>
+                  <Text w="full">
+                    {hero.name} ({hero.color})
+                  </Text>
+                  <Button onClick={() => setEditSelected(hero.id, formikProps)}>
+                    Edit
+                  </Button>
+                  <Button onClick={() => deleteHero(hero.id)} colorScheme="red">
+                    Delete
+                  </Button>
+                </HStack>
+              </ListItem>
+            ))}
+          </UnorderedList>
+          <Form>
+            <Box mt={2}>
+              <FormControl
+                isInvalid={formikProps.touched.name && formikProps.errors.name}
+              >
+                <FormLabel>Hero Name</FormLabel>
+                <Input
+                  value={formikProps.values.name}
+                  onChange={formikProps.handleChange}
+                  name="name"
+                  placeholder="Hero name"
+                />
+                <FormErrorMessage>{formikProps.errors.name}</FormErrorMessage>
+              </FormControl>
+              <FormControl
+                isInvalid={
+                  formikProps.touched.color && formikProps.errors.color
+                }
+              >
+                <FormLabel>Color</FormLabel>
+                <Input
+                  value={formikProps.values.color}
+                  onChange={formikProps.handleChange}
+                  name="color"
+                  placeholder="Hero color"
+                />
+                <FormErrorMessage>{formikProps.errors.color}</FormErrorMessage>
+              </FormControl>
+              <Button type="submit" mt={2}>
+                Submit
               </Button>
-            </HStack>
-          </ListItem>
-        ))}
-      </UnorderedList>
-      <Box mt={2} as="form" onSubmit={handleSubmitHero}>
-        <FormControl>
-          <FormLabel>Hero Name</FormLabel>
-          <Input
-            value={formHero.name}
-            onChange={handleInputChange}
-            name="name"
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Color</FormLabel>
-          <Input
-            value={formHero.color}
-            onChange={handleInputChange}
-            name="color"
-          />
-        </FormControl>
-        <Button type="submit" mt={2}>
-          Submit
-        </Button>
-        {selectedId !== null && (
-          <Button mt={2} ml={2} onClick={() => setSelectedId(null)}>
-            Cancel Edit
-          </Button>
-        )}
-      </Box>
-    </Box>
+              {selectedId !== null && (
+                <Button
+                  mt={2}
+                  ml={2}
+                  onClick={() => {
+                    setSelectedId(null);
+                    formikProps.resetForm();
+                  }}
+                >
+                  Cancel Edit
+                </Button>
+              )}
+            </Box>
+          </Form>
+        </Box>
+      )}
+    </Formik>
   );
 }

@@ -24,6 +24,21 @@
       "name": "Jaka Sembung",
       "color": "Gray",
       "id": 5
+    },
+    {
+      "name": "Homelander",
+      "color": "Maroon",
+      "id": 6
+    },
+    {
+      "name": "Ki",
+      "color": "White",
+      "id": 7
+    },
+    {
+      "name": "Khalid",
+      "color": "Purple",
+      "id": 8
     }
   ]
 }
