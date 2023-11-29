@@ -6,9 +6,12 @@ import {
   Heading,
   Spacer,
 } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
+  const count = useSelector((state) => state.user.count);
+
   return (
     <Box bg="teal.500" py={5} mb={5}>
       <Container maxW="container.xl">
@@ -18,7 +21,7 @@ export default function Navbar() {
           </Heading>
           <Spacer />
           <Button as={Link} to="/" variant="ghost" color="white">
-            Users
+            Users ({count})
           </Button>
           <Button as={Link} to="/register" variant="ghost" color="white">
             Register

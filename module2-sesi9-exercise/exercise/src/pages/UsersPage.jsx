@@ -1,18 +1,8 @@
 import { Container, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import axiosInstance from "../axios";
+import { useSelector } from "react-redux";
 
 export default function UsersPage() {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
-    const resp = await axiosInstance.get("/users");
-    setUsers(resp.data);
-  };
+  const users = useSelector((state) => state.user.data);
 
   return (
     <Container maxW="container.lg">

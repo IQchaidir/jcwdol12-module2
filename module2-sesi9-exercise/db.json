@@ -5,6 +5,30 @@
       "name": "Jaka",
       "email": "jaka.tarub@mail.com",
       "password": "Asd123!@#"
+    },
+    {
+      "name": "Ridho Azhar",
+      "email": "ridho@purwadhika.com",
+      "password": "Purwadhika12#",
+      "id": 2
+    },
+    {
+      "name": "Ridho Azbar",
+      "email": "ridho2@purwadhika.com",
+      "password": "Purwadhika123#",
+      "id": 3
+    },
+    {
+      "name": "Jhon Doe",
+      "email": "jhon.doe@mail.com",
+      "password": "John123!@#",
+      "id": 4
+    },
+    {
+      "name": "Gatot Kaca",
+      "email": "gatot.kaca@mail.com",
+      "password": "Gatot123!@#",
+      "id": 5
     }
   ]
 }
